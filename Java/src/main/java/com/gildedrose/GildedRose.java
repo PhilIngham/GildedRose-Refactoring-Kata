@@ -25,47 +25,52 @@ class GildedRose {
         }
     }
 
+    private void decreaseSellByDate(Item item) {
+        item.sellIn--;
+    }
+
+    private void increaseQuality(Item item) {
+        item.quality++;
+        item.quality = Math.min(item.quality, 50);
+    }
+
+    private void decreaseQuality(Item item) {
+        item.quality--;
+        item.quality = Math.max(item.quality, 0);
+    }
+
     private void updateSulfuras() {
         // Sulfuras never changes, stats remain the same
     }
 
     private void updateBrie(Item brie) {
-        brie.quality++;
-        brie.quality = Math.min(brie.quality, 50);
-        brie.sellIn--;
+        increaseQuality(brie);
+        decreaseSellByDate(brie);
     }
 
     private void updateTicket(Item ticket) {
         int dateOfConcert = ticket.sellIn;
-        if(dateOfConcert < 0){
+        if(dateOfConcert < 0){ // Concert has passed and ticket no longer holds value
             ticket.quality = 0;
-            ticket.sellIn--;
+            decreaseSellByDate(ticket);
             return;
         }
-        ticket.quality++;
+
+        increaseQuality(ticket);
         if (dateOfConcert < 11){
-            ticket.quality++;
-            if(dateOfConcert < 6){
-               ticket.quality++;
-            }
+            increaseQuality(ticket);
+            if(dateOfConcert < 6) increaseQuality(ticket);
         }
-        ticket.quality = Math.min(ticket.quality, 50);
-        ticket.sellIn--;
+        decreaseSellByDate(ticket);
     }
 
     private void updateCommonItem(Item item) {
-        item.quality--;
+        decreaseQuality(item);
         if(item.sellIn < 0){
-            item.quality--;
+            decreaseQuality(item);
         }
-        item.quality = Math.max(item.quality, 0);
-        item.sellIn--;
+        decreaseSellByDate(item);
     }
-
-
-
-
-
 
 
 }
